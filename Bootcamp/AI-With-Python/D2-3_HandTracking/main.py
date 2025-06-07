@@ -22,7 +22,9 @@ while True:
     frame = cv2.flip(frame, 1)
     frame = handDetect.findHands(frame)
     lmlist = handDetect.getHandLocation(frame, draw=True)
+
     # print(lmlist)
+
     if len(lmlist) != 0:
         fingers = []
         if lmlist[top_idx[0]][1] < lmlist[top_idx[0] - 1][1]:
@@ -34,10 +36,13 @@ while True:
                 fingers.append(1)
             else:
                 fingers.append(0)
+
         print(fingers)
+        
         openFingers = fingers.count(1)
         cv2.rectangle(frame, (20, 20), (200, 200), (255, 255, 255), cv2.FILLED)
         cv2.putText(frame, str(int(openFingers)), (50, 170), cv2.FONT_HERSHEY_PLAIN, 10, (255, 0, 0), 25)
+
         if fingers[1] and fingers[2] and fingers.count(1) == 2:
             cv2.putText(frame, "Peace", (50, 270),cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 3)
         elif fingers[0] and fingers.count(1) == 1:	

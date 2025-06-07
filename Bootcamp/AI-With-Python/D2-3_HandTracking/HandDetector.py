@@ -2,7 +2,6 @@ import cv2
 import mediapipe as mp
 
 class handDetector:
-    # FIXED: The constructor name is now __init__
     def __init__(self, static_mode=False, maxhands=2, detection_confident=0.5, tracking_confident=0.5):
         self.static_mode = static_mode
         self.maxhands = maxhands
