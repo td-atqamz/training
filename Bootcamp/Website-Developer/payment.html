@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Timedoor Store</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <script src="script.js"></script>
+    <header>
+        <h1 onclick="window.location.href='index.html'" style="cursor: pointer;">Timedoor Store</h1>
+        <nav>
+            <a href='dashboard.html'>Home</a>
+            <a href='contact.html'>Contact</a>
+            <a href='about.html'>About</a>
+            <a href='cart.html'>Cart</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="order-summary" id="order-summary">
+            <h3>Order Details</h3>
+            <p id="total-price"><strong>Total: $0</strong></p>
+        </div>
+        <form class="payment-form">
+            <h3>Payment Information</h3>
+
+            <label for="card-name">Cardholder Name</label>
+            <input type="text" id="card-name" placeholder="Name on Card" required>
+
+            <label for="card-number">Card Number</label>
+            <input type="number" id="card-number" placeholder="1234 5678 9012 3456" required>
+
+            <label for="expiry-date">Expiry Date</label>
+            <input type="number" id="expiry-date" placeholder="MM/YY" required>
+
+            <label for="cvv">CVV</label>
+            <input type="number" id="cvv" placeholder="123" required>
+
+            <button type="submit" class="pay-button">Pay Now</button>
+        </form>
+
+        <div class="modal-container">
+            <div class="modal">
+                <h3>This is Modal</h3>
+                <span onclick="hideModal()">x</span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Timedoor Store. All Rights Reserved. Made by Atqa Munzir</p>
+    </footer>
+</body>
+
+</html>
