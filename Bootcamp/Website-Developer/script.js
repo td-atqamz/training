@@ -1,6 +1,6 @@
 function goToProductDetail(productId) {
     localStorage.setItem('selectedProductId', productId);
-    window.location.href = 'product-detail.html';
+    window.location.href = 'product-detail';
 }
 
 function loadProductDetail() {
@@ -28,10 +28,10 @@ function loadProductDetail() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.location.pathname.includes('dashboard.html')) {
+    if (window.location.pathname.includes('dashboard')) {
         const htmlElement = document.querySelector('html');
         if (htmlElement) {
-            htmlElement.style.overflow = 'scroll';
+            htmlElement.style.overflow = 'visible';
         } else {
             console.error("HTML element not found.");
         }
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (window.location.pathname.includes('payment.html')) {
+    if (window.location.pathname.includes('payment')) {
         const orderSummary = document.getElementById('order-summary');
         const totalPriceElement = document.getElementById('total-price');
 
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showModal('Payment Successful! Thank you for your purchase.');
             localStorage.removeItem('selectedItems'); // Clear selected items after purchase
             localStorage.removeItem('cart'); // Clear the entire cart after purchase
-            window.location.href = 'index.html'; // Redirect to home or shop page
+            window.location.href = 'index'; // Redirect to home or shop page
         });
     }
 
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCartItems();
     }
 
-    if (window.location.pathname.includes('product-detail.html')) {
+    if (window.location.pathname.includes('product-detail')) {
         loadProductDetail();
 
         document.getElementById('add-to-cart-button').addEventListener('click', () => {
@@ -120,7 +120,6 @@ function loadCartItems() {
         cartItem.classList.add('cart-item');
         cartItem.innerHTML = `
             <input type="checkbox" class="item-checkbox" data-index="${index}" onchange="updateTotal()">
-            <input type="checkbox" class="item-checkbox" data-index="${index}" >
             <img src="${item.img}" alt="${item.name}">
             <div class="cart-item-details">
                 <h3>${item.name}</h3>
@@ -177,7 +176,7 @@ if (checkoutButton) {
 
         if (selectedItems.length > 0) {
             localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
-            window.location.href = 'payment.html'; // Redirect to payment page
+            window.location.href = 'payment'; // Redirect to payment page
         } else {
             alert("Please select at least one item to proceed.");
         }
