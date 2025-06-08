@@ -83,6 +83,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (window.location.pathname.includes('cart')) {
         loadCartItems();
+
+        const checkoutButton = document.getElementById('checkout-button');
+        if (checkoutButton) {
+            checkoutButton.addEventListener('click', () => {
+                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const checkboxes = document.querySelectorAll('.item-checkbox');
+                let selectedItems = [];
+
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        const index = checkbox.dataset.index;
+                        selectedItems.push(cart[index]);
+                    }
+                });
+
+                if (selectedItems.length > 0) {
+                    localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+                    window.location.href = 'payment'; // Redirect to payment page
+                } else {
+                    alert("Please select at least one item to proceed.");
+                }
+            });
+        }
     }
 
     if (window.location.pathname.includes('product-detail')) {
@@ -158,27 +181,4 @@ function showModal(message) {
 function hideModal() {
     const modal = document.querySelector('.modal-container');
     modal.style.visibility = 'hidden';
-}
-
-const checkoutButton = document.getElementById('checkout-button');
-if (checkoutButton) {
-    checkoutButton.addEventListener('click', () => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const checkboxes = document.querySelectorAll('.item-checkbox');
-        let selectedItems = [];
-
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const index = checkbox.dataset.index;
-                selectedItems.push(cart[index]);
-            }
-        });
-
-        if (selectedItems.length > 0) {
-            localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
-            window.location.href = 'payment'; // Redirect to payment page
-        } else {
-            alert("Please select at least one item to proceed.");
-        }
-    });
 }
