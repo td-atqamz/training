@@ -65,7 +65,7 @@ This will install all the dependencies listed in the requirements.txt file.
 ### Error on protobuf
 
 ```bash
-ImportError: cannot import name 'builder' from 'google.protobuf.internal
+ImportError: cannot import name 'builder' from 'google.protobuf.internal'
 ```
 
 If you encounter an error related to protobuf, you can add `builder.py` to the `(venv)\Lib\site-packages\google\protobuf\internal\` folder.
