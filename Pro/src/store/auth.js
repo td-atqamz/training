@@ -70,17 +70,15 @@ export default {
       }
 
       try {
-        const endpoint = `${buildDbUrl("user")}?auth=${state.token}`;
+        const endpoint = `${buildDbUrl(`user/${payload}`)}?auth=${state.token}`;
         const { data } = await axios.get(endpoint);
-        const userList = Object.values(data || {});
-        const user = userList.find((person) => person.userId === payload);
 
-        if (user) {
-          Cookies.set("UID", user.userId);
-          commit("setUserLogin", { userData: user, loginStatus: true });
+        if (data) {
+          Cookies.set("UID", data.userId);
+          commit("setUserLogin", { userData: data, loginStatus: true });
         }
       } catch (error) {
-        console.log(error);
+        console.log("Get user failed", error);
       }
     },
     async getRegisterData({ commit, dispatch, state }, payload) {
