@@ -1,10 +1,24 @@
 <script setup>
-import { computed, reactive } from 'vue';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 const store = useStore();
+const route = useRoute();
+const router = useRouter();
 
 const recipeDetail = computed(() => store.state.recipe.recipeDetail);
+const favoriteIds = computed(() => store.state.auth.userLogin.favorites || []);
+const isFavorited = computed(() => favoriteIds.value.includes(route.params.id));
+
+const toggleFavorite = async () => {
+    if (!store.state.auth.token) {
+        router.push({ name: "login" });
+        return;
+    }
+
+    await store.dispatch("auth/toggleFavorite", route.params.id);
+};
 </script>
 <template>
     <div
@@ -50,8 +64,9 @@ const recipeDetail = computed(() => store.state.recipe.recipeDetail);
             </div>
             <p class="my-3">Recipe By {{ recipeDetail.username }}</p>
             <div>
-                <button class="btn fav-btn px-3 py-2 rounded-pill">
-                    <i class="far fa-heart pe-2"></i>Add To Favorite
+                <button class="btn fav-btn px-3 py-2 rounded-pill" @click="toggleFavorite">
+                    <i :class="[isFavorited ? 'fas' : 'far', 'fa-heart', 'pe-2']"></i>{{ isFavorited ? 'Added to'
+                    : 'Add To' }} Favorite
                 </button>
             </div>
         </div>

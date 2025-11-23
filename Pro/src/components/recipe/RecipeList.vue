@@ -1,9 +1,27 @@
 <script setup>
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+const store = useStore();
+const router = useRouter();
+
 defineProps({
     recipes: {
         type: Array
     }
-})
+});
+
+const favoriteIds = computed(() => store.state.auth.userLogin.favorites || []);
+const isFavorited = (id) => favoriteIds.value.includes(id);
+const toggleFavorite = async (recipeId) => {
+    if (!store.state.auth.token) {
+        router.push({ name: "login" });
+        return;
+    }
+
+    await store.dispatch("auth/toggleFavorite", recipeId);
+};
 </script>
 
 <template>
@@ -21,9 +39,12 @@ defineProps({
                     <p>Recipe By {{ recipe.username }}</p>
                 </div>
             </RouterLink>
-            <div class="position-absolute text-secondary bg-light px-2 py-1 rounded-circle top-0 end-0 m-4 like-icon">
-                <i class="fas fa-heart"></i>
-            </div>
+            <button
+                class="position-absolute text-secondary bg-light px-2 py-1 rounded-circle top-0 end-0 m-4 like-icon border-0"
+                type="button" @click.stop="toggleFavorite(recipe.id)">
+                <i :class="[isFavorited(recipe.id) ? 'fas' : 'far', 'fa-heart']"
+                    :style="{ color: isFavorited(recipe.id) ? '#cb3a31' : 'inherit' }"></i>
+            </button>
         </div>
     </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup>
 import UserRecipeCard from "./UserRecipeCard.vue";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { RouterLink, useRouter } from "vue-router";
 
@@ -15,6 +15,12 @@ const deleteRecipe = async (id) => {
     await store.dispatch("recipe/deleteRecipe", id);
     router.push("/");
 };
+
+onMounted(async () => {
+    if (!store.state.recipe.recipes.length) {
+        await store.dispatch("recipe/getRecipeData");
+    }
+});
 </script>
 <template>
     <ul class="list-group">

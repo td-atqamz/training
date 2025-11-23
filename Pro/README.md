@@ -60,7 +60,7 @@ See the [Vite Configuration Reference](https://vite.dev/config/) for advanced bu
 1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com).
 2. Enable Email/Password Authentication.
 3. Create a Realtime Database and set rules to allow public read and authenticated write.
-4. Add your Firebase config (API key, auth domain, database URL, etc.) to the project and update the endpoints in `src/store/auth.js` and `src/store/recipe.js`.
+4. Add your Firebase config (API key and Realtime Database URL) to a `.env` file based on `.env.example` so the app points to your fresh Firebase project.
 5. (Optional) Enable Firebase Storage if you prefer managing uploads there instead of base64 strings.
 
 ## 📁 Project Structure

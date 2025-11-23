@@ -1,4 +1,5 @@
 import axios from "axios";
+import { buildDbUrl, firebaseConfig } from "./firebaseConfig";
 
 export default {
   namespaced: true,
@@ -6,9 +7,30 @@ export default {
     return {
       recipes: [],
       recipeDetail: {},
+      searchTerm: "",
     };
   },
-  getters: {},
+  getters: {
+    filteredRecipes(state) {
+      const term = state.searchTerm.trim().toLowerCase();
+      if (!term) {
+        return state.recipes;
+      }
+
+      return state.recipes.filter((recipe) => {
+        const haystack = [
+          recipe.name,
+          recipe.category,
+          recipe.username,
+          ...(recipe.ingredients || []),
+        ]
+          .filter(Boolean)
+          .map((item) => item.toString().toLowerCase());
+
+        return haystack.some((value) => value.includes(term));
+      });
+    },
+  },
   mutations: {
     setRecipeData(state, payload) {
       state.recipes = payload;
@@ -19,15 +41,21 @@ export default {
     setNewRecipe(state, payload) {
       state.recipes.push(payload);
     },
+    setSearchTerm(state, payload) {
+      state.searchTerm = payload;
+    },
   },
   actions: {
     async getRecipeData({ commit }) {
+      if (!firebaseConfig.databaseURL) {
+        console.warn("Firebase database URL is missing. Please set VITE_FIREBASE_DB_URL.");
+        return;
+      }
+
       try {
-        const { data } = await axios.get(
-          "https://vue-js-project-936b9-default-rtdb.firebaseio.com/recipes.json"
-        );
+        const { data } = await axios.get(buildDbUrl("recipes"));
         const arr = [];
-        for (let key in data) {
+        for (let key in data || {}) {
           arr.push({ id: key, ...data[key] });
         }
         commit("setRecipeData", arr);
@@ -36,26 +64,34 @@ export default {
       }
     },
     async getRecipeDetail({ commit }, payload) {
+      if (!firebaseConfig.databaseURL) {
+        console.warn("Firebase database URL is missing. Please set VITE_FIREBASE_DB_URL.");
+        return;
+      }
+
       try {
-        const { data } = await axios.get(
-          `https://vue-js-project-936b9-default-rtdb.firebaseio.com/recipes/${payload}.json`
-        );
+        const { data } = await axios.get(buildDbUrl(`recipes/${payload}`));
         commit("setRecipeDetail", data);
       } catch (error) {
         console.error("Error fetching recipe detail:", error);
       }
     },
     async addNewRecipe({ commit, rootState }, payload) {
+      if (!firebaseConfig.databaseURL) {
+        console.warn("Firebase database URL is missing. Please set VITE_FIREBASE_DB_URL.");
+        return;
+      }
+
       const newData = {
         ...payload,
         username: rootState.auth.userLogin.username,
         userId: rootState.auth.userLogin.userId,
-        likes: ["null"],
+        likes: [],
         createdAt: Date.now(),
       };
       try {
         const { data } = await axios.post(
-          `https://vue-js-project-936b9-default-rtdb.firebaseio.com/recipes.json?auth=${rootState.auth.token}`,
+          `${buildDbUrl("recipes")}?auth=${rootState.auth.token}`,
           newData
         );
         commit("setNewRecipe", { id: data.name, ...newData });
@@ -64,9 +100,14 @@ export default {
       }
     },
     async deleteRecipe({ commit, dispatch, rootState }, payload) {
+      if (!firebaseConfig.databaseURL) {
+        console.warn("Firebase database URL is missing. Please set VITE_FIREBASE_DB_URL.");
+        return;
+      }
+
       try {
         await axios.delete(
-          `https://vue-js-project-936b9-default-rtdb.firebaseio.com/recipes/${payload}.json?auth=${rootState.auth.token}`
+          `${buildDbUrl(`recipes/${payload}`)}?auth=${rootState.auth.token}`
         );
         await dispatch("getRecipeData");
       } catch (error) {
@@ -74,9 +115,14 @@ export default {
       }
     },
     async updateRecipe({ dispatch, rootState }, { id, newRecipe }) {
+      if (!firebaseConfig.databaseURL) {
+        console.warn("Firebase database URL is missing. Please set VITE_FIREBASE_DB_URL.");
+        return;
+      }
+
       try {
         const { data } = await axios.put(
-          `https://vue-js-project-936b9-default-rtdb.firebaseio.com/recipes/${id}.json?auth=${rootState.auth.token}`,
+          `${buildDbUrl(`recipes/${id}`)}?auth=${rootState.auth.token}`,
           newRecipe
         );
         await dispatch("getRecipeData");

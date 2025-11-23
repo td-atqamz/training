@@ -1,35 +1,28 @@
-<script>
+<script setup>
 import RecipeList from '../recipe/RecipeList.vue'
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
-export default {
-  setup() {
-    const store = useStore();
-    const recipeListStatus = ref(false);
-    const recipeList = ref();
+const store = useStore();
+const isLoading = ref(true);
 
-    onMounted(async () => {
-      try {
-        await store.dispatch('recipe/getRecipeData');
-        recipeListStatus.value = true;
-        recipeList.value = store.state.recipe.recipes;
-      }
-      catch (error) {
-        console.error('Error fetching recipe list:', error);
-      }
-    });
+const recipeList = computed(() => store.getters['recipe/filteredRecipes']);
+const hasRecipes = computed(() => recipeList.value.length > 0);
+const searchTerm = computed(() => store.state.recipe.searchTerm);
 
-    return {
-      recipeList,
-      recipeListStatus
+onMounted(async () => {
+  try {
+    if (!store.state.recipe.recipes.length) {
+      await store.dispatch('recipe/getRecipeData');
     }
-  },
-  components: {
-    RecipeList
   }
-
-}
+  catch (error) {
+    console.error('Error fetching recipe list:', error);
+  }
+  finally {
+    isLoading.value = false;
+  }
+});
 </script>
 <template>
   <div class="container-md my-5 py-5">
@@ -42,6 +35,15 @@ export default {
         you follow.
       </p>
     </div>
-    <recipe-list :recipes="recipeList" v-if="recipeListStatus"></recipe-list>
+    <div v-if="isLoading" class="text-center py-5 text-secondary">
+      Loading recipes...
+    </div>
+    <div v-else-if="hasRecipes">
+      <recipe-list :recipes="recipeList"></recipe-list>
+    </div>
+    <div v-else class="text-center py-5 text-secondary">
+      <p class="mb-1">No recipes found<span v-if="searchTerm"> for "{{ searchTerm }}"</span>.</p>
+      <p class="mb-0">Try another keyword or add your own recipe.</p>
+    </div>
   </div>
 </template>
