@@ -4,25 +4,16 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
-export default defineConfig(async ({ command }) => {
-  const plugins = [vue()];
-
-  if (command === 'serve') {
-    const { default: vueDevTools } = await import('vite-plugin-vue-devtools');
-    plugins.push(vueDevTools());
-  }
-
-  return {
-    plugins,
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
-      },
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     },
-    base: '/',
-    build: {
-      outDir: 'dist',
-      assetsDir: 'assets',
-    }
-  };
-});
+  },
+  base: '/',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+  }
+})
